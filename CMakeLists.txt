@@ -6,7 +6,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 20)
 
-find_package(Qt6 6.2 COMPONENTS Quick Svg REQUIRED)
+find_package(Qt6 6.2 COMPONENTS Quick Svg Widgets REQUIRED)
 find_package(Threads REQUIRED)
 find_package(TBB REQUIRED)
 
@@ -14,6 +14,9 @@ qt_add_executable(appVast
     main.cpp
     boardcanvas.hpp boardcanvas.cpp
     path.hpp path.cpp
+    draw.cpp
+    pan.cpp
+    zoom.cpp
 )
 
 qt_add_qml_module(appVast
@@ -27,6 +30,9 @@ qt_add_resources(appVast "icons"
     FILES
     icons/pen.svg
     icons/eraser.svg
+    icons/triangle.svg
+    icons/squiggle.svg
+    icons/squiggle_thin.svg
 )
 
 
@@ -39,7 +45,7 @@ set_target_properties(appVast PROPERTIES
 )
 
 target_link_libraries(appVast
-    PRIVATE Qt6::Quick Qt6::Svg Threads::Threads TBB::tbb)
+    PRIVATE Qt6::Quick Qt6::Svg Qt6::Widgets Threads::Threads TBB::tbb)
 target_compile_features(appVast PRIVATE cxx_std_20)
 
 install(TARGETS appVast

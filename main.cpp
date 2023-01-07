@@ -1,11 +1,10 @@
-#include "qqml.h"
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 #include "boardcanvas.hpp"
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
     QQmlApplicationEngine engine;
 
     qmlRegisterType<BoardCanvas>("BoardCanvas",1,0,"BoardCanvas");

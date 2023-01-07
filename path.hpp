@@ -2,14 +2,19 @@
 #define PATH_HPP
 
 #include <QVector>
+#include <QColor>
 #include <QPointF>
 #include <cstdint>
 #include <vector>
 #include <algorithm>
 
+enum Path_type {path,circle};
+
 struct Path
 {
-    float width = 1;
+    double width = 1;
+    Path_type type = {};
+    QColor color = {};
     QVector<QPointF> points = {};
 
     void scale(float f);
