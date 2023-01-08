@@ -25,6 +25,7 @@ void BoardCanvas::paint(QPainter *painter)
             break;
         }
         default:{
+            //ADD LINE SIMPLFICATION BASED ON ZOOM
             std::for_each(line.points.begin(),line.points.end(), [&line_smooth](auto &point){
                 line_smooth.lineTo(point);
             });

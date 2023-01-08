@@ -29,3 +29,6 @@ void BoardCanvas::change_size(QPoint const &offset)
     current_line_.append({last_point_,offset});
     this->update();
 }
+
+//TODO:
+// line smoothening and simplification

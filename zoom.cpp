@@ -33,3 +33,5 @@ void BoardCanvas::zoom_to(float const &f, QPoint const &point)
 //TODO:
 // local zoom, on the drawing, not the points themselves, point only store original size
 // benefits: preserves detail, add a filter to drawing function that only draws if its visible
+
+// Visvalingam’s Algorithm, simplify the lines based on zoom level
