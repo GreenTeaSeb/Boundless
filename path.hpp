@@ -1,9 +1,11 @@
+#pragma once
 #ifndef PATH_HPP
 #define PATH_HPP
 
 #include <QVector>
 #include <QColor>
 #include <QPointF>
+#include <QLineF>
 #include <cstdint>
 #include <vector>
 #include <algorithm>
@@ -19,6 +21,7 @@ struct Path
 
     void scale(float f);
     void translate(float x, float y);
+    static QVector<QPointF> simplify(QVector<QPointF> const &points ,float epsilon);
 };
 
 #endif // PATH_HPP

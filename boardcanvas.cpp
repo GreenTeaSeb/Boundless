@@ -15,24 +15,32 @@ void BoardCanvas::paint(QPainter *painter)
     painter->setRenderHint(QPainter::Antialiasing, true);
 
     for(auto const&line : lines_){
-
         painter->setPen(QPen(line.color, line.width , Qt::SolidLine, Qt::RoundCap));
+
         QPainterPath line_smooth = {};
+        auto simplified = Path::simplify(line.points,3);
         line_smooth.moveTo(line.points[0]);
         switch(line.points.length()){
         case 1: {
-            painter->drawPoint(line.points[0]);
+            painter->drawPoint(simplified[0]);
             break;
         }
         default:{
             //ADD LINE SIMPLFICATION BASED ON ZOOM
-            std::for_each(line.points.begin(),line.points.end(), [&line_smooth](auto &point){
+            std::for_each(simplified.begin(),simplified.end(), [&line_smooth](auto &point){
                 line_smooth.lineTo(point);
             });
+
             break;
         }
         }
         painter->drawPath(line_smooth);
+
+        painter->setPen(QPen(Qt::blue, line.width*0.5));
+        painter->drawPoints(simplified);
+        painter->setPen(QPen(Qt::red, line.width*0.3));
+        painter->drawPoints(line.points);
+
     }
 
     painter->setPen(QPen(Qt::red,brush_size_/2));

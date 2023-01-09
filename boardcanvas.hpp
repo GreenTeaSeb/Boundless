@@ -1,3 +1,4 @@
+#pragma once
 #ifndef BOARDCANVAS_HPP
 #define BOARDCANVAS_HPP
 
