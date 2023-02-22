@@ -15,6 +15,8 @@ double perpendicular_distance(QPointF point, QLineF line) {
 void Path::scale(float f)
 {
     width *= f;
+    region.setTopLeft(region.topLeft() * f);
+    region.setBottomRight(region.bottomRight() * f);
     std::for_each(std::execution::par , points.begin(), points.end(),
         [f](auto &point){
             point*=f;
@@ -24,11 +26,36 @@ void Path::scale(float f)
 
 void Path::translate(float x, float y)
 {
+    region.adjust(x,y,x,y);
     std::for_each(std::execution::par , points.begin(), points.end(),
         [&x,&y](auto &point){
             point.setX(point.x() + x);point.setY(point.y() + y);
         }
     );
+}
+
+bool Path::intersects(const QLineF &line)
+{
+    if(!region.contains(line.p2()) && !region.contains(line.p1()))
+        return false;
+
+    for (auto i = 0; i < points.length() - 1; ++i) {
+        QLineF segment(points.at(i), points.at(i+1) );
+        if (segment.intersects(line) == QLineF::BoundedIntersection)
+            return true;
+    }
+    return false;
+}
+
+bool Path::contains(const QPointF &point)
+{
+    if(!region.contains(point))
+        return false;
+
+    for (auto i = 0; i < points.size() - 1; ++i) {
+
+    }
+    return false;
 }
 
 QVector<QPointF> Path::simplify(QVector<QPointF> const &points,float epsilon)

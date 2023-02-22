@@ -11,28 +11,28 @@ Window {
     width: 640
     height: 480
     visible: true
-    title: qsTr("Fractal")
+    title: qsTr("Boundless")
 
     SystemPalette { id: palette; colorGroup: SystemPalette.Active }
 
-    Text {
-        id: cur_cord
-        y: 456
-        text: 'X: Y:'
-        anchors.left: parent.left
-        anchors.bottom: parent.bottom
-        color:  palette.text
-        font.pixelSize: 12
-        anchors.leftMargin: 25
-        anchors.bottomMargin: 8
-        z: 2
-    }
+//    Text {
+//        id: cur_cord
+//        y: 456
+//        text: 'X: Y:'
+//        anchors.left: parent.left
+//        anchors.bottom: parent.bottom
+//        color:  palette.text
+//        font.pixelSize: 12
+//        anchors.leftMargin: 25
+//        anchors.bottomMargin: 8
+//        z: 2
+//    }
 
     Text {
         id: offset_label
         y: 456
         color:  palette.text
-        text: `${(canvas.zoom + 20) * (100 - 0) / (20  + 20) + 0}% ${canvas.zoom}\n${canvas.offset}`
+        text: `${(canvas.zoom + 20) * (100 - 0) / (20  + 20) + 0}% ${canvas.zoom}\n${canvas.offset}\nPage:${canvas.current_page}`
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         font.pixelSize: 12
@@ -44,7 +44,7 @@ Window {
     Text {
         id: zoomto
         color:  palette.text
-        text: `${mousearea.drawing}\n${canvas.brush_size}`
+        text: canvas.current_tool
         anchors.right: parent.right
         anchors.top: parent.top
         font.pixelSize: 12
@@ -67,12 +67,22 @@ Window {
         anchors.right: parent.right
         anchors.rightMargin: 20
         z: 4
-        IconImage {
-            source: "qrc:icons/squiggle.svg"
-            sourceSize.height: 30
-            sourceSize.width: 30
-            antialiasing: true
-            color: palette.text
+//        IconImage {
+//            source: "qrc:icons/squiggle.svg"
+//            sourceSize.height: 30
+//            sourceSize.width: 30
+//            antialiasing: true
+//            color: palette.text
+//        }
+
+        Rectangle{
+            color: palette.button
+            height: 25
+            width: 25
+            radius: width/2
+            border.width: 1
+            border.color: palette.dark
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
         }
 
         Slider{
@@ -101,7 +111,7 @@ Window {
                 width: Math.min(Math.max(size_slider.value, 6), 20) + 4;
                 radius: width/2
                 anchors.horizontalCenter: parent.horizontalCenter
-                color: palette.button
+                color: palette.highlight
                 border.width: 1
                 border.color: palette.dark
             }
@@ -109,14 +119,79 @@ Window {
                 canvas.brush_size = value
             }
         }
-        IconImage {
-            source: "qrc:icons/squiggle_thin.svg"
+
+        Rectangle{
+            color: palette.button
+            height: 5
+            width: 5
+            radius: 360
+            border.width: 1
+            border.color: palette.dark
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-            sourceSize.height: 20
-            sourceSize.width: 20
-            antialiasing: true
-            color: palette.text
+
         }
+//        IconImage {
+//            source: "qrc:icons/squiggle_thin.svg"
+//            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+//            sourceSize.height: 20
+//            sourceSize.width: 20
+//            antialiasing: true
+//            color: palette.text
+//        }
+    }
+
+
+    DropShadow{
+        anchors.fill: toolbar
+        radius: 20
+        samples: radius*2 + 1
+        color: '#80000000'
+        source: toolbar
+        z: 2
+    }
+
+    Button {
+        id: drawer_button
+        z: 3
+        text: qsTr("Button")
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: parent.left
+        highlighted: true
+        anchors.leftMargin: drawer.position * drawer.width
+        icon.color: "#ffffff"
+
+        onClicked: {
+            console.log(canvas.pages)
+            if(drawer.position == 0)
+                drawer.open()
+            else
+                drawer.close()
+        }
+    }
+
+    Drawer {
+        id: drawer
+        width: Math.min(0.33  * window.width,300)
+        height: window.height
+        modal: false
+
+        edge: Qt.LeftEdge
+        z: 2;
+        interactive: false
+
+        ListView{
+            anchors.fill: parent
+            orientation: ListView.Vertical
+            model: model
+            delegate: Text {
+                text: "aa"
+            }
+        }
+    }
+
+    ListModel {
+        id: model
+
     }
 
     ToolBar {
@@ -124,7 +199,7 @@ Window {
         height: 45
         z: 3
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 5
+        anchors.bottomMargin: 10
         anchors.horizontalCenter: parent.horizontalCenter
         background: Rectangle{
             color: palette.button
@@ -135,39 +210,25 @@ Window {
 
         RowLayout{
             anchors.fill: parent
-            Button{
-                icon.height: 20
-                icon.width: 20
-                checkable: true
-                display: AbstractButton.IconOnly
-                antialiasing: true
+
+            Toolbutton{
+                icon.color: (canvas.current_tool === 0 ?  palette.highlight : palette.text)
                 icon.source: "qrc:icons/pen.svg"
                 Layout.fillHeight: true
                 Layout.preferredWidth: height
-                icon.color: palette.text
-
-                background: Rectangle {
-                    color: parent.down ? "red" : (parent.hovered ? "blue" : "transparent")
-                }
-
+                shortcut_key: "F"
+                tool_id: 0
             }
-            Button{
-                icon.color: palette.text
-                icon.height: 20
-                icon.width: 20
-                checkable: true
-                display: AbstractButton.IconOnly
-                antialiasing: true
+            Toolbutton{
+                icon.color: (canvas.current_tool === 1 ?  palette.highlight : palette.text)
                 icon.source: "qrc:icons/eraser.svg"
                 Layout.fillHeight: true
                 Layout.preferredWidth: height
+                shortcut_key: "E"
+                tool_id: 1
 
-                background: Rectangle {
-                    color: parent.down ? "red" : (parent.hovered ? "blue" : "transparent")
-                }
             }
 
-            ToolSeparator{}
 
             Button{
                 antialiasing: true
@@ -191,16 +252,6 @@ Window {
         }
 
     }
-    DropShadow{
-        anchors.fill: toolbar
-        radius: 8
-        samples: radius*2 + 1
-        color: '#40000000'
-        source: toolbar
-        z: 2
-    }
-
-
 
     BoardCanvas{
         id: canvas
@@ -219,7 +270,6 @@ Window {
                     // pan around
                     canvas.offset = Qt.point(prevX-mouse.x,prevY-mouse.y)
                     mousearea.cursorShape = Qt.BlankCursor
-
                 }
                 else if (mouse.modifiers & Qt.ShiftModifier){
                     //change brush size
@@ -231,7 +281,7 @@ Window {
                     canvas.draw_line(Qt.point(mouse.x,mouse.y))
                     canvas.last_point = Qt.point(mouse.x,mouse.y)
                 }
-                cur_cord.text = `prev-X: ${prevX} prev-Y: ${prevY}\nX: ${mouse.x} Y: ${mouse.y}\nDiff X: ${prevX-mouse.x} Y: ${prevY-mouse.y}`
+//                cur_cord.text = `prev-X: ${prevX} prev-Y: ${prevY}\nX: ${mouse.x} Y: ${mouse.y}\nDiff X: ${prevX-mouse.x} Y: ${prevY-mouse.y}`
 
             }
             onWheel: {
@@ -254,14 +304,6 @@ Window {
                     drawing = false;
                 }
             }
-
-
         }
     }
-
-
-
-
-
-
 }

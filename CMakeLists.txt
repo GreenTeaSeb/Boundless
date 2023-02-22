@@ -6,7 +6,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 20)
 
-find_package(Qt6 6.2 COMPONENTS Quick Svg Widgets REQUIRED)
+find_package(Qt6 6.4 COMPONENTS Quick Svg Widgets REQUIRED)
 find_package(Threads REQUIRED)
 find_package(TBB REQUIRED)
 
@@ -17,12 +17,14 @@ qt_add_executable(appVast
     draw.cpp
     pan.cpp
     zoom.cpp
+    page.cpp
+    page.hpp
 )
 
 qt_add_qml_module(appVast
     URI Vast
     VERSION 1.0
-    QML_FILES main.qml 
+    QML_FILES main.qml Toolbutton.qml
 )
 
 qt_add_resources(appVast "icons"

@@ -16,7 +16,7 @@ void BoardCanvas::setOffset(const QPoint &offset)
    transform_ *= transform;
    offset_ = QPoint(transform_.dx(),transform_.dy());
 
-   this->update();
+   this->update_visible_();
    emit offsetChanged();
 }
 
